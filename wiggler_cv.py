@@ -1,6 +1,5 @@
 import io
 import json
-# font = cv2.FONT_HERSHEY_SIMPLEX
 from subprocess import Popen, PIPE
 from threading import Thread, Condition
 
@@ -11,6 +10,8 @@ from picamera.array import bytes_to_rgb
 
 
 class WigglerCV(io.IOBase):
+    font = cv2.FONT_HERSHEY_SIMPLEX
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.input_res_h = None
@@ -44,6 +45,16 @@ class WigglerCV(io.IOBase):
 
         if self.debug_level >= 2:
             cv2.aruco.drawDetectedMarkers(input_frame, corners, ids)
+
+            if self._corners is not None:
+                cv2.putText(input_frame,
+                            'x={},y={}'.format(self._corners[0][0][0][0], self._corners[0][0][0][1]),
+                            (20, 20),
+                            fontFace=self.font,
+                            fontScale=0.5,
+                            color=(255, 255, 255),
+                            thickness=1,
+                            lineType=cv2.LINE_AA)
 
             if self._stream_proc:
                 try:
@@ -79,8 +90,8 @@ class WigglerCV(io.IOBase):
         if self.stream_cmd:
             self._stream_proc = Popen(self.stream_cmd, stdin=PIPE)
         if self.gstreamer_pipe:
-            # noinspection PyArgumentList
             pipe = ' ! '.join(self.gstreamer_pipe)
+            # noinspection PyArgumentList
             self._gstreamer = cv2.VideoWriter(pipe,
                                               cv2.CAP_GSTREAMER,
                                               self.input_fps,

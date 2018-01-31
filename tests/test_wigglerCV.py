@@ -16,7 +16,7 @@ class TestWigglerCV(TestCase):
         wcv.run()
         start_time = time.perf_counter()
         for marker in wcv:
-            print(marker)
+            # print(marker)
             if time.perf_counter() > start_time + 150:
                 break
         wcv.terminate()
