@@ -9,7 +9,7 @@ Location2 = namedtuple('Location', ['coordinates', 'rotscale', 'cost'])
 
 class Markers:
     marker_size = 15.
-    marker_distance = 30.
+    marker_distance = 35.
     marker_ids = [42, 18, 12]
 
     marker_corners = np.array([
