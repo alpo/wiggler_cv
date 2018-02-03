@@ -7,10 +7,12 @@ class TestMarkers(TestCase):
     def test_get_location(self):
         corners = [
             [
-                [1, -1], [1, 1], [-1, 1], [-1, -1]
+                [
+                    [1, -1], [1, 1], [-1, 1], [-1, -1]
+                ]
             ]
         ]
-        ids = list(Markers.markers.keys())
+        ids = [[x, ] for x in Markers.markers.keys()]
         position = Markers.get_location(corners, ids)
         print(position)
         if isinstance(position, Location1):
@@ -29,13 +31,17 @@ class TestMarkers(TestCase):
     def test_get_location_cost(self):
         corners = [
             [
-                [1.2, -1], [1.2, 1], [-0.8, 1], [-0.8, -1]
+                [
+                    [1.2, -1], [1.2, 1], [-0.8, 1], [-0.8, -1]
+                ],
             ],
             [
-                [0.8, -1], [0.8, 1], [-1.2, 1], [-1.2, -1]
+                [
+                    [0.8, -1], [0.8, 1], [-1.2, 1], [-1.2, -1]
+                ],
             ]
         ]
-        ids = [list(Markers.markers.keys())[0], ] * 2
+        ids = [[list(Markers.markers.keys())[0], ], ] * 2
         position = Markers.get_location(corners, ids)
         print(position)
         if isinstance(position, Location1):

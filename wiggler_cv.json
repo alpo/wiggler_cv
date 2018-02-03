@@ -3,6 +3,9 @@
   "input_res_v": 480,
   "input_fps": 25,
   "debug_level": 2,
+  "streaming_host": "brix.local",
+  "streaming_port": 5000,
+  "fast_area_size": 230,
   "-stream_cmd": [
     "cvlc",
     "--demux=rawvideo",
@@ -69,9 +72,9 @@
   "gstreamer_pipe": [
     "appsrc is-live=true do-timestamp=true",
     "videoconvert",
-    "video/x-raw,format=I420,width=640,height=480,framerate=25/1",
+    "video/x-raw,format=I420,width={width},height={height},framerate={fps}/1",
     "omxh264enc control-rate=1 target-bitrate=4000000",
     "mpegtsmux",
-    "udpsink host=brix.local port=5000"
+    "udpsink host={host} port={port}"
   ]
 }

@@ -51,8 +51,7 @@ class Markers:
     @classmethod
     def get_location(cls, corners, ids):
         aligned_markers = []
-        for c, i in zip(corners, ids):
-            c = c[0]
+        for i in ids:
             i = i[0]
             if i in cls.markers:
                 aligned_markers.append(cls.markers[i])
@@ -73,6 +72,7 @@ class Markers:
         if False:
             opt_result = optimize.least_squares(cls.error_function, position_guess,
                                                 args=(reference_corners, input_corners))
+            # noinspection PyUnresolvedReferences
             position = Location1(coordinates=[opt_result.x[0], opt_result.x[1]],
                                  rotation_rad=opt_result.x[2],
                                  scale=opt_result.x[3],
