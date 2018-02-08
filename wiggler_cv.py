@@ -9,7 +9,6 @@ from subprocess import Popen, PIPE
 
 import cv2
 import picamera
-import pigpio
 from picamera.array import bytes_to_rgb
 
 from markers import Markers
@@ -57,8 +56,6 @@ class WigglerCV(io.IOBase):
         """
         Thread function
         """
-        pi = pigpio.pi()
-
         try:
             self._picamera = picamera.PiCamera(
                 resolution='{}x{}'.format(self.config.input_res_h, self.config.input_res_v),
@@ -82,16 +79,14 @@ class WigglerCV(io.IOBase):
                                                   (self.config.input_res_h, self.config.input_res_v))
 
             self._picamera.start_recording(self, format='bgr')
-            pi.write(26, 1)
-            pi.write(23, 1)
+            self._pi.write(26, 1)
             while not self._terminate:
                 try:
                     self._picamera.wait_recording(1)
                 except KeyboardInterrupt:
                     break
         finally:
-            pi.write(26, 0)
-            pi.write(23, 0)
+            self._pi.write(26, 0)
             try:
                 self._picamera.stop_recording()
             except:
@@ -211,14 +206,14 @@ class WigglerCV(io.IOBase):
             if isinstance(item, OsdText):
                 cv2.putText(input_frame, item.text, (int(item.x), int(item.y)), fontFace=self.font,
                             fontScale=0.5,
-                            color=(255, 255, 255), thickness=1)  # , lineType=cv2.LINE_AA)
+                            color=(255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
             elif isinstance(item, OsdDot):
                 cv2.circle(input_frame, (int(item.x), int(item.y)), radius=2,
                            color=(0, 0, 255), thickness=3)
             elif isinstance(item, OsdVector):
                 cv2.arrowedLine(input_frame, (int(item.x1), int(item.y1)),
                                 (int(item.x2), int(item.y2)),
-                                color=(0, 255, 0), thickness=2)
+                                color=(0, 255, 0), thickness=2, line_type=cv2.LINE_AA)
 
     def osd_update(self, osd_list):
         with self._osd_list_lock:
@@ -235,7 +230,10 @@ class WigglerCV(io.IOBase):
         return self.next()
 
     def next(self):
-        position = self._position_queue.get()
+        try:
+            position = self._position_queue.get()
+        except KeyboardInterrupt:
+            raise StopIteration
         if position == StopIteration:
             raise StopIteration
         else:
