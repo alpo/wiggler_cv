@@ -3,7 +3,7 @@ import colorsys
 import pigpio
 import time
 
-from motors import Motors
+from vibromotors import Motors
 from wiggler_cv import WigglerCV, OsdText
 
 
