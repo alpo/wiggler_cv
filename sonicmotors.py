@@ -25,7 +25,6 @@ class Motors:
     def __init__(self, pi, freq=3000):
         self.pi = pi
         self.freq = freq
-        self.period_us = 1e6 // self.freq
         self.pins = (19, 20, 21, 22)
         self.count = len(self.pins)
         for pin in self.pins:
@@ -37,6 +36,7 @@ class Motors:
         :param speeds: max speed is 1
         :return:
         """
+        self.period_us = 1e6 // self.freq
         self.phases = tuple(speeds)
         transitions = []
         transitions.append(Transition(time_us=0, pin=self.pins[0], level=1))
@@ -96,4 +96,4 @@ class Motors:
         self.pi.wave_send_repeat(wave_id)
 
     def off(self):
-        pass
+        self.pi.wave_tx_stop()

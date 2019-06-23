@@ -8,9 +8,13 @@ class TestMotors(TestCase):
     def test_set(self):
         pi = pigpio.pi()
         motors = Motors(pi=pi)
-        # motors.set((0, 0, 0))
-        motors.set((0.25, 0.5, 0.75))
-        time.sleep(20)
+        motors.freq = 3000
+        for ph13 in (x / 10.0 for x in range(0, 9)):
+            #motors.set((0, 0, 0))
+            motors.set((ph13, 0.0, ph13))
+            time.sleep(4)
+
+        motors.off()
 
     def test_off(self):
         self.fail()
